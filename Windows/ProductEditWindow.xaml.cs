@@ -1,0 +1,105 @@
+﻿using pract_15.Models;
+using pract_15.Services;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Reflection;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Input;
+
+namespace pract_15.Windows
+{
+    public partial class ProductEditWindow : Window
+    {
+        public Product Product { get; }
+        public ObservableCollection<Category> Categories { get; }
+        public ObservableCollection<Brand> Brands { get; }
+        public List<TagItem> Tags { get; set; }
+        public Category SelectedCategory { get; set; }
+        public Brand SelectedBrand { get; set; }
+
+        private readonly ElectroShopDbContext db = DBService.Instance.Context;
+
+        public ProductEditWindow(Product product)
+        {
+            Product = product;
+
+            Categories = new ObservableCollection<Category>(db.Categories.ToList());
+            Brands = new ObservableCollection<Brand>(db.Brands.ToList());
+
+            SelectedCategory = Categories.FirstOrDefault(x => x.Id == Product.CategoryId);
+            SelectedBrand = Brands.FirstOrDefault(x => x.Id == Product.BrandId);
+            var selectedTagIds = Product.Tags.Select(t => t.Id).ToList();
+
+            Tags = db.Tags
+                .Select(t => new TagItem
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                    IsSelected = selectedTagIds.Contains(t.Id)
+                })
+                .ToList();
+
+            DataContext = this;
+
+
+            DataContext = this;
+            InitializeComponent();
+        }
+
+
+
+        private void Save_Click(object sender, RoutedEventArgs e)
+        {
+          
+            if (
+         string.IsNullOrWhiteSpace(Product.Name) ||
+         Product.Price <= 1||
+         Product.Stock < 1 ||
+         Product.Rating < 1 || Product.Rating > 5 ||
+         SelectedCategory == null ||
+         SelectedBrand == null ||
+         !Tags.Any(t => t.IsSelected)
+        )
+            {
+                MessageBox.Show(
+                    "Заполните все обязательные поля корректно:\n",
+                    "Ошибка ввода",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                return;
+            }
+        
+
+            Product.CategoryId = SelectedCategory.Id;
+            Product.BrandId = SelectedBrand.Id;
+
+            if (Product.Id == 0)
+            {
+                db.Products.Add(Product);
+                db.SaveChanges();
+            }
+
+            Product.Tags.Clear();
+
+            foreach (var tag in Tags.Where(t => t.IsSelected))
+            {
+                var tagEntity = db.Tags.First(t => t.Id == tag.Id);
+                Product.Tags.Add(tagEntity);
+            }
+
+            db.SaveChanges();
+            DialogResult = true;
+        }
+
+
+
+
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
+        }
+
+    }
+}
