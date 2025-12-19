@@ -55,12 +55,12 @@ namespace pract_15.Windows
           
             if (
          string.IsNullOrWhiteSpace(Product.Name) ||
-         Product.Price <= 1||
+         Product.Price < 1||
          Product.Stock < 1 ||
          Product.Rating < 1 || Product.Rating > 5 ||
          SelectedCategory == null ||
-         SelectedBrand == null ||
-         !Tags.Any(t => t.IsSelected)
+         SelectedBrand == null 
+       
         )
             {
                 MessageBox.Show(
