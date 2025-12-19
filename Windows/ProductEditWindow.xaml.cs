@@ -55,7 +55,7 @@ namespace pract_15.Windows
           
             if (
          string.IsNullOrWhiteSpace(Product.Name) ||
-         Product.Price < 1||
+         Convert.ToInt32(Product.Price) < 1.00||
          Product.Stock < 1 ||
          Product.Rating < 1 || Product.Rating > 5 ||
          SelectedCategory == null ||

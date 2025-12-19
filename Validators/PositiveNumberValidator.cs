@@ -7,11 +7,22 @@ namespace pract_15.Validators
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            if (!double.TryParse(value?.ToString(), out double number))
+            var val = value.ToString() ?? String.Empty;
+
+            bool successInvariant = float.TryParse(
+                val,
+                System.Globalization.NumberStyles.Float, // Allows decimal point, exponents, etc.
+                System.Globalization.CultureInfo.InvariantCulture,
+                out float numberInvariant
+            );
+
+
+            if (!successInvariant)
                 return new ValidationResult(false, "Введите число");
 
-            if (number <= 0)
+            if (numberInvariant <= 0.00)
                 return new ValidationResult(false, "Число должно быть больше 0");
+            
 
             return ValidationResult.ValidResult;
         }

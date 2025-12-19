@@ -60,7 +60,7 @@ namespace pract_15.Windows {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/pract_15;V1.0.0.0;component/windows/tagswindow.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/pract_15;component/windows/tagswindow.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\Windows\TagsWindow.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

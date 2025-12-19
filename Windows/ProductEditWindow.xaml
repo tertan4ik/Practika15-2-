@@ -63,6 +63,7 @@
                 <TextBox.Text>
                     <Binding Path="Product.Price"
                              UpdateSourceTrigger="PropertyChanged"
+                             StringFormat="{}{0:F2}"
                             >
                         <Binding.ValidationRules>
                             <validators:PositiveNumberValidator/>
